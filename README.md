@@ -31,5 +31,4 @@ https://huggingface.co/spaces/11no11/musaed_score
 (نُشر كـ Static Space لأن Gradio Spaces على Hugging Face تتطلب اشتراكًا مدفوعًا، فالصفحة المنشورة تحمل نفس النموذج المدرَّب، ونسخة Gradio الأصلية موجودة في `app.py`.)
 
 ## الفريق
-- اسم العضو الأول
-- اسم العضو الثاني
+-نورة لافي 
