@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مُساعِد: توقّع معدل الطالب</title>
+<style>
+:root{--bg:#f5f7fb;--card:#fff;--text:#1b2433;--muted:#5b6678;--accent:#2f6fed;--ring:#dbe4f5}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1520;--card:#182131;--text:#eef2f9;--muted:#a3adbf;--accent:#6c9bff;--ring:#2a3a55}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,"Segoe UI",Tahoma,Arial,sans-serif;display:flex;justify-content:center;padding:24px}
+.card{background:var(--card);border:1px solid var(--ring);border-radius:16px;padding:24px;width:100%;max-width:460px}
+h1{font-size:1.35rem;margin:0 0 4px}
+p.sub{color:var(--muted);margin:0 0 20px;font-size:.95rem}
+label{display:flex;justify-content:space-between;font-weight:600;margin:18px 0 8px}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.out{margin-top:26px;text-align:center;border-top:1px solid var(--ring);padding-top:20px}
+.out small{color:var(--muted);display:block}
+.num{font-size:2.6rem;font-weight:700;color:var(--accent);margin:6px 0}
+.note{color:var(--muted);font-size:.82rem;margin-top:14px;line-height:1.6}
+</style>
+</head>
+<body>
+<main class="card">
+  <h1>مُساعِد: توقّع معدل الطالب</h1>
+  <p class="sub">حرّك المؤشرين ليظهر المعدل المتوقع فورًا.</p>
+  <label for="h">ساعات المذاكرة <span id="hv">5</span></label>
+  <input id="h" type="range" min="0" max="10" step="1" value="5">
+  <label for="a">نسبة الحضور <span id="av">75</span>%</label>
+  <input id="a" type="range" min="40" max="100" step="1" value="75">
+  <div class="out">
+    <small>المعدل المتوقع (تقدير تقريبي)</small>
+    <div class="num" id="gpa">3.2</div>
+  </div>
+  <p class="note">النموذج: شجرة قرار (DecisionTreeRegressor) بعمق 3 دُرّبت على بيانات 200 طالب، ومتوسط الخطأ على الاختبار حوالي 0.42. هذا تقدير مبني على بيانات وليس رقمًا مضمونًا.</p>
+</main>
+<script>
+const TREE = {"f": 0, "t": 4.5, "l": {"f": 0, "t": 2.5, "l": {"f": 0, "t": 1.5, "l": {"v": 2.3345}, "r": {"v": 2.6154}}, "r": {"f": 1, "t": 69.5, "l": {"v": 2.7652}, "r": {"v": 3.22}}}, "r": {"f": 0, "t": 7.5, "l": {"f": 1, "t": 83.5, "l": {"v": 3.3179}, "r": {"v": 3.7}}, "r": {"f": 1, "t": 89.5, "l": {"v": 3.7725}, "r": {"v": 4.081}}}};
+function predict(hours, attendance){
+  let n = TREE;
+  const x = [hours, attendance];
+  while (n.v === undefined) { n = x[n.f] <= n.t ? n.l : n.r; }
+  return Math.round(n.v * 100) / 100;
+}
+const h = document.getElementById('h'), a = document.getElementById('a');
+function update(){
+  document.getElementById('hv').textContent = h.value;
+  document.getElementById('av').textContent = a.value;
+  document.getElementById('gpa').textContent = predict(+h.value, +a.value).toFixed(2);
+}
+h.addEventListener('input', update); a.addEventListener('input', update); update();
+</script>
+</body>
+</html>
